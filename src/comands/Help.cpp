@@ -47,8 +47,8 @@ public:
 						if (!arg.required)
 							std::cout << " (optional, default: " << (arg.defaultValue.empty() ? "none" : arg.defaultValue) << ")";
 						std::cout << ": " << arg.description << "\n";
-					}
-				}
+					};
+				};
 
 				// Show usage examples
 				auto usageExamples = command->usage();
@@ -56,20 +56,20 @@ public:
 					std::cout << "\nUsage:\n";
 					for (const auto &example : usageExamples) {
 						std::cout << "  " << example << "\n";
-					}
-				}
+					};
+				};
 
 			} else {
 				std::cout << "Command '" << commandName << "' not found.\n";
-			}
+			};
 		} else {
 			// Show all commands
 			std::cout << "Available commands:\n";
 			for (const auto &[name, cmd] : registry.allCommands()) {
 				std::cout << "  " << name << ": " << cmd->description() << "\n";
-			}
+			};
 			std::cout << "\nUse 'help --command=<command>' for more information about a specific command.\n";
-		}
+		};
 	}
 };
 
