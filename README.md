@@ -10,7 +10,7 @@ cmake .. && make
 
 ## Documentation
 ```bash
-./xported --help
+./xported-cli --help
 ```
 
 ## Features
