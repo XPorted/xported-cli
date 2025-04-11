@@ -6,10 +6,10 @@
  * @brief Represents a command argument with its properties
  */
 struct CommandArgument {
-	std::string name;		   ///< Name of the argument
-	std::string description;   ///< Description of the argument
-	bool required;			   ///< Whether this argument is required
-	std::string defaultValue;  ///< Default value (if not required)
+	std::string name;		   // Name of the argument
+	std::string description;   // Description of the argument
+	bool required;			   // Whether this argument is required
+	std::string defaultValue;  // Default value (if not required)
 };
 
 /**
