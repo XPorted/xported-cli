@@ -60,6 +60,20 @@
 		"iomanip": "cpp",
 		"sstream": "cpp",
 		"mutex": "cpp",
-		"thread": "cpp"
+		"thread": "cpp",
+		"any": "cpp",
+		"bitset": "cpp",
+		"condition_variable": "cpp",
+		"cstring": "cpp",
+		"forward_list": "cpp",
+		"list": "cpp",
+		"set": "cpp",
+		"unordered_set": "cpp",
+		"optional": "cpp",
+		"regex": "cpp",
+		"semaphore": "cpp",
+		"stop_token": "cpp",
+		"cinttypes": "cpp",
+		"variant": "cpp"
 	}
 }

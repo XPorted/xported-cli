@@ -7,30 +7,6 @@
 #include "Command.hpp"
 #include "CommandRegistry.hpp"
 
-/**
- * # xported.toml
- * This file is used to store the configuration for the xported CLI.
- *
- * Configuration options:
- * schema = "v1" # The schema version of the configuration file.
- *
- * [owner]
- * name = "Your Name"
- * email = "example@email.com"
- *
- * [[contributors]]
- * name = "Contributor Name"
- * email = "contributor@email.com"
- *
- * [files]
- * includes = ["*.txt", "src/\*.js", "main.cpp"]
- * excludes = ["*.log", "*.tmp"]
- *
- * [access.http]
- * enabled = true
- * port = 8080
- */
-
 class Init : public Command {
 public:
 	std::string name() const override { return "init"; }
