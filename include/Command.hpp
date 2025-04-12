@@ -91,7 +91,7 @@ public:
 	/**
 	 * @brief Execute the command with the given arguments.
 	 *
-	 * @param args A vector of strings representing the command-line arguments.]
+	 * @param args A vector of strings representing the command-line arguments.
 	 *
 	 * @returns int 0 on success, or a non-zero error code on failure.
 	 */
