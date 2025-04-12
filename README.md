@@ -1,4 +1,4 @@
-# XPorted
+# XPorted CLI
 
 > A fast command-line tool for local and remote file management.
 
@@ -9,9 +9,11 @@ cmake .. && make
 ```
 
 ## Documentation
-```bash
-./xported-cli --help
-```
+ - [Installation](docs/installation.md)
+ - [Getting Started](docs/getting-started.md)
+ - [Usage](docs/usage.md)
+ - [Configuration](docs/configuration.md)
+ - [Development](docs/development.md)
 
 ## Features
 - [ ] File Management
