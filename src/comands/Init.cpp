@@ -23,7 +23,7 @@
  * email = "contributor@email.com"
  *
  * [files]
- * includes = ["*.txt", "src/*.js", "main.cpp"]
+ * includes = ["*.txt", "src/\*.js", "main.cpp"]
  * excludes = ["*.log", "*.tmp"]
  *
  * [access.http]
@@ -38,8 +38,8 @@ public:
 
 	std::vector<CommandArgument> arguments() const override {
 		return {
-			{"--force", "Overwrite existing files if they exist."},
-			{"<directory>", "The directory to initialize the directory in."}};
+			{"--force", "Overwrite existing files if they exist.", false, ""},
+			{"<directory>", "The directory to initialize the directory in.", false, ""}};
 	}
 
 	std::vector<std::string> usage() const override {
