@@ -18,8 +18,9 @@ public:
 		};
 	}
 
-	void execute(const std::vector<std::string> &) override {
+	int execute(const std::vector<std::string> &) override {
 		std::cout << "xported-cli v0.1.0\n";
+		return 0;	// Success
 	}
 };
 

@@ -23,7 +23,7 @@ public:
 		};
 	}
 
-	void execute(const std::vector<std::string> &args) override {
+	int execute(const std::vector<std::string> &args) override {
 		auto &registry = CommandRegistry::instance();
 
 		// Check if a specific command is requested
@@ -58,9 +58,11 @@ public:
 						std::cout << "  " << example << "\n";
 					};
 				};
-
+				
+				return 0; // Success
 			} else {
 				std::cout << "Command '" << commandName << "' not found.\n";
+				return 1; // Error - command not found
 			};
 		} else {
 			// Show all commands
@@ -69,6 +71,7 @@ public:
 				std::cout << "  " << name << ": " << cmd->description() << "\n";
 			};
 			std::cout << "\nUse 'help --command=<command>' for more information about a specific command.\n";
+			return 0; // Success
 		};
 	}
 };

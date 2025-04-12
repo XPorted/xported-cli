@@ -74,9 +74,13 @@ public:
         };
     }
     
-    void execute(const std::vector<std::string> &args) override {
+    int execute(const std::vector<std::string> &args) override {
         // Command implementation goes here
         std::cout << "MyCommand executed with " << args.size() << " arguments\n";
+		for (const auto &arg : args) {
+			std::cout << "Argument: " << arg << "\n";
+		};
+		return 0; // Return 0 for success, non-zero for failure
     }
 };
 

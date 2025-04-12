@@ -51,7 +51,7 @@ public:
 		};
 	}
 
-	void execute(const std::vector<std::string>& args) override {
+	int execute(const std::vector<std::string>& args) override {
 		bool force = false;
 		std::filesystem::path targetDir;  // Will be set to the first non-flag argument
 		bool dirSpecified = false;
@@ -82,7 +82,7 @@ public:
 		if (!std::filesystem::exists(targetDir)) {
 			if (!std::filesystem::create_directories(targetDir)) {
 				std::cout << "Error: Unable to create directory " << targetDir << std::endl;
-				return;
+				return 1;
 			};
 			std::cout << "Created directory: " << targetDir << std::endl;
 		};
@@ -90,13 +90,13 @@ public:
 		std::filesystem::path configPath = targetDir / "xported.toml";
 		if (std::filesystem::exists(configPath) && !force) {
 			std::cout << "Error: " << configPath << " already exists. Use --force to overwrite." << std::endl;
-			return;
+			return 1;
 		};
 
 		std::ofstream configFile(configPath);
 		if (!configFile.is_open()) {
 			std::cout << "Error: Unable to create " << configPath << std::endl;
-			return;
+			return 1;
 		};
 
 		// Write the default configuration to the file
@@ -121,6 +121,8 @@ public:
 		std::cout << "Initialized new xported directory in "
 				  << std::filesystem::absolute(targetDir) << std::endl;
 		std::cout << "Configuration saved to " << configPath << std::endl;
+
+		return 0;
 	}
 };
 

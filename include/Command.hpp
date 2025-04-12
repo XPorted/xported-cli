@@ -50,7 +50,7 @@ struct CommandArgument {
  * };
  * ```
  *
- * @note The `execute` method should not throw exceptions. Instead, it should handle errors gracefully and return an appropriate error message.
+ * @note The `execute` method should not throw exceptions. Instead, it should handle errors gracefully and return an error code of 0 on success or a non-zero error code on failure.
  */
 class Command {
 public:
@@ -91,7 +91,9 @@ public:
 	/**
 	 * @brief Execute the command with the given arguments.
 	 *
-	 * @param args A vector of strings representing the command-line arguments.
+	 * @param args A vector of strings representing the command-line arguments.]
+	 * 
+	 * @returns int 0 on success, or a non-zero error code on failure.
 	 */
-	virtual void execute(const std::vector<std::string> &args) = 0;
+	virtual int execute(const std::vector<std::string> &args) = 0;
 };

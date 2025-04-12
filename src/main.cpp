@@ -20,12 +20,13 @@ int main(int argc, char *argv[]) {
 
 	// Check if the command is registered
 	const std::string commandName = args[0];
+	int returnCode = 0;
 	if (auto *cmd = registry.getCommand(commandName)) {
-		cmd->execute(args);
+		returnCode = cmd->execute(args);
 	} else {
 		std::cerr << "Error: Unknown command '" << commandName << "'\n";
-		return 1;
+		returnCode = 1;
 	};
 
-	return 0;
+	return returnCode;
 }
