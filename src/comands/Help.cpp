@@ -58,11 +58,11 @@ public:
 						std::cout << "  " << example << "\n";
 					};
 				};
-				
-				return 0; // Success
+
+				return 0;  // Success
 			} else {
 				std::cout << "Command '" << commandName << "' not found.\n";
-				return 1; // Error - command not found
+				return 1;  // Error - command not found
 			};
 		} else {
 			// Show all commands
@@ -71,7 +71,7 @@ public:
 				std::cout << "  " << name << ": " << cmd->description() << "\n";
 			};
 			std::cout << "\nUse 'help --command=<command>' for more information about a specific command.\n";
-			return 0; // Success
+			return 0;  // Success
 		};
 	}
 };

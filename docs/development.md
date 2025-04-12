@@ -8,15 +8,15 @@ The XPorted project is organized into several directories, each serving a specif
 
 ```
 xported-cli/
-	├── src/
-	│   ├── main.cpp # Main entry point for the application
-	│   └── commands/
-	├── include/
-	├── docs/
-	├── .gitignore
-	├── CMakeLists.txt # CMake build configuration
-	├── LICENSE
-	└── README.md
+ ├── src/
+ │ 	├── main.cpp # Main entry point for the application
+ │ 	└── commands/
+ ├── include/
+ ├── docs/
+ ├── .gitignore
+ ├── CMakeLists.txt # CMake build configuration
+ ├── LICENSE
+ └── README.md
 ```
 
 ## Setting Up the Development Environment
@@ -58,41 +58,41 @@ Here's an example for a new command:
 
 class MyCommand : public Command {
 public:
-    std::string name() const override { return "mycommand"; }
-    std::string description() const override { return "Description of my command"; }
-    
-    std::vector<CommandArgument> arguments() const override {
-        return {
-            {"argument", "Description of argument", true, ""}
-        };
-    }
-    
-    std::vector<std::string> usage() const override {
-        return {
-            "xported-cli mycommand <argument>",
-            "xported-cli mycommand --option=value"
-        };
-    }
-    
-    int execute(const std::vector<std::string> &args) override {
-        // Command implementation goes here
-        std::cout << "MyCommand executed with " << args.size() << " arguments\n";
+	std::string name() const override { return "mycommand"; }
+	std::string description() const override { return "Description of my command"; }
+
+	std::vector<CommandArgument> arguments() const override {
+		return {
+			{"argument", "Description of argument", true, ""}
+		};
+	}
+
+	std::vector<std::string> usage() const override {
+		return {
+			"xported-cli mycommand <argument>",
+			"xported-cli mycommand --option=value"
+		};
+	}
+
+	int execute(const std::vector<std::string> &args) override {
+		// Command implementation goes here
+		std::cout << "MyCommand executed with " << args.size() << " arguments\n";
 		for (const auto &arg : args) {
 			std::cout << "Argument: " << arg << "\n";
 		};
 		return 0; // Return 0 for success, non-zero for failure
-    }
+	}
 };
 
 // Auto-register the command
 namespace {
-    struct Registrar {
-        Registrar() {
-            CommandRegistry::instance().registerCommand(
-                std::make_unique<MyCommand>()
-            );
-        }
-    } autoRegister;
+	struct Registrar {
+		Registrar() {
+			CommandRegistry::instance().registerCommand(
+				std::make_unique<MyCommand>()
+			);
+		}
+	} autoRegister;
 }  // namespace
 ```
 ### Command Interface

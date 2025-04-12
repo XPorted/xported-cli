@@ -58,7 +58,7 @@ excludes = ["*.log", "*.tmp"]
 - **Fields**:
   - `http`: A table containing HTTP access settings.
 	- `enabled`: A boolean indicating whether HTTP access is enabled.
-	- `port`: The port number for HTTP access.	
+	- `port`: The port number for HTTP access.
 - **Example**:
 ```toml
 [access.http]

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(xported-cli 
+project(xported-cli
     VERSION 0.1.0
     DESCRIPTION "A fast command-line tool for local and remote file management."
     LANGUAGES CXX)
