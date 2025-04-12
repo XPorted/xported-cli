@@ -51,6 +51,13 @@ public:
 		return commands_;
 	}
 
+	/**
+	 * @brief Clear all registered commands.
+	 */
+	void clear() {
+		commands_.clear();
+	}
+
 private:
 	std::map<std::string, std::unique_ptr<Command>> commands_;
 };

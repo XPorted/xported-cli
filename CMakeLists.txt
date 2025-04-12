@@ -29,3 +29,6 @@ elseif(MSVC)
 endif()
 
 set(CMAKE_INSTALL_MESSAGE LAZY)
+
+enable_testing()
+add_subdirectory(test)

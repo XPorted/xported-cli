@@ -74,6 +74,8 @@
 		"semaphore": "cpp",
 		"stop_token": "cpp",
 		"cinttypes": "cpp",
-		"variant": "cpp"
+		"variant": "cpp",
+		"csignal": "cpp",
+		"span": "cpp"
 	}
 }
