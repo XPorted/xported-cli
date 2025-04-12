@@ -5,7 +5,6 @@ XPorted is an open-source project, and we welcome contributions from the communi
 
 ## Project Structure
 The XPorted project is organized into several directories, each serving a specific purpose:
-
 ```
 xported-cli/
  ├── src/
@@ -28,14 +27,12 @@ xported-cli/
 - Optional: A code editor or IDE (e.g., Visual Studio Code, CLion) for easier development
 ### Cloning the Repository
 To get started, clone the repository:
-
 ```bash
 git clone https://github.com/XPorted/xported-cli.git
 cd xported-cli
 ```
 ### Building the Project
 To build the project, create a build directory and run CMake:
-
 ```bash
 mkdir -p build && cd build
 cmake ..
@@ -43,13 +40,11 @@ make
 ```
 ### Running
 After building, you can run the:
-
 ```bash
 ./xported-cli
 ```
 ### Running Tests
 XPorted CLI includes a test suite to ensure the functionality of the commands with the use of Google Test framework. To run the tests, follow these steps:
-
 ```bash
 cd build # Assuming you are in the root directory and have built the project
 ./ctest
@@ -63,7 +58,6 @@ To add a new command to XPorted, follow these steps:
 3. Register the new command using the auto-registration pattern.
 
 Here's an example for a new command:
-
 ```cpp
 // src/comands/MyCommand.cpp
 #include <iostream>
@@ -121,7 +115,7 @@ The `CommandRegistry` class is responsible for managing all registered commands.
 ### Building and Testing
 After making changes, you can build the project again using the same `cmake` and `make` commands.
 1. Build the project:
-```
+```bash
 cd build
 cmake ..
 make

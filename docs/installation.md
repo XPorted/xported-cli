@@ -5,7 +5,6 @@
 - CMake 3.10 or higher
 
 ## Building from source
-
 ```bash
 # Clone the repository
 git clone https://github.com/Xported/xported-cli.git
@@ -25,7 +24,6 @@ sudo make install
 ## Verifying Installation
 
 After installation, verify that XPorted CLI is working correctly:
-
 ```bash
 xported-cli version
 ```

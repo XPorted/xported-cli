@@ -3,7 +3,6 @@
 ## Basic Usage
 
 XPorted CLI uses a command-based interface. The basic syntax is:
-
 ```bash
 xported-cli <command> [arguments]
 ```
@@ -11,7 +10,6 @@ xported-cli <command> [arguments]
 ## Initialize a Directory
 
 To start using XPorted in a directory:
-
 ```bash
 # Initialize in the current directory
 xported-cli init
@@ -28,13 +26,11 @@ This creates a `xported.toml` configuration file that defines your directory set
 ## Getting Help
 
 To see available commands:
-
 ```bash
 xported-cli help
 ```
 
 For help on a specific command:
-
 ```bash
 xported-cli help --command=init
 ```

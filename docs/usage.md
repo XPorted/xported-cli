@@ -3,7 +3,6 @@
 ## Command Structure
 
 XPorted CLI follows a simple command structure:
-
 ```bash
 xported-cli <command> [arguments]
 ```

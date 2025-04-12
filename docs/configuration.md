@@ -74,7 +74,6 @@ You can customize the configuration file to suit your needs. Here are some commo
 
 ## Example Configuration
 Here is an example of a more complex configuration file:
-
 ```toml
 # xported.toml
 # This file is used to store the configuration for the xported CLI.
