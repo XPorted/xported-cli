@@ -24,12 +24,10 @@ FetchContent_MakeAvailable(googletest)
 
 # Add test executable
 # Individual test executables
-add_executable(main_test mainTest.cpp)
 add_executable(command_registry_test CommandRegistryTest.cpp)
 add_executable(command_test CommandTest.cpp)
 
 # Link libraries for each test
-target_link_libraries(main_test gtest gtest_main pthread)
 target_link_libraries(command_registry_test gtest gtest_main pthread)
 target_link_libraries(command_test gtest gtest_main pthread)
 
