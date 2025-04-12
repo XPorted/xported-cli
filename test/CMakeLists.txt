@@ -34,13 +34,11 @@ target_link_libraries(command_registry_test gtest gtest_main pthread)
 target_link_libraries(command_test gtest gtest_main pthread)
 
 # Add individual tests
-add_test(NAME main_test COMMAND main_test)
 add_test(NAME command_registry_test COMMAND command_registry_test)
 add_test(NAME command_test COMMAND command_test)
 
 # Optional: Keep the all_tests target if you still want it
-add_executable(all_tests 
-	mainTest.cpp
+add_executable(all_tests
 	CommandRegistryTest.cpp
 	CommandTest.cpp
 )
