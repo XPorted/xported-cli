@@ -13,6 +13,7 @@ xported-cli/
  │ 	└── commands/
  ├── include/
  ├── docs/
+ ├── tests/
  ├── .gitignore
  ├── CMakeLists.txt # CMake build configuration
  ├── LICENSE
@@ -39,6 +40,19 @@ To build the project, create a build directory and run CMake:
 mkdir -p build && cd build
 cmake ..
 make
+```
+### Running
+After building, you can run the:
+
+```bash
+./xported-cli
+```
+### Running Tests
+XPorted CLI includes a test suite to ensure the functionality of the commands with the use of Google Test framework. To run the tests, follow these steps:
+
+```bash
+cd build # Assuming you are in the root directory and have built the project
+./ctest
 ```
 
 ## Command Structure
@@ -114,7 +128,7 @@ make
 ```
 2. Run the tests:
 ```bash
-./xported-cli mycommand --help
+ctest # Assuming you are in the build directory
 ```
 
 ## Coding Standards
@@ -128,8 +142,11 @@ The project follows a specific coding style:
 1. Fork the repository.
 2. Create a new branch for your changes.
 3. Make your changes and commit them with a clear message.
-4. Ensure your code builds without warnings or errors.
-5. Submit a pull request to the main repository with a description of your changes.
+4. Ensure your code passes all tests and adheres to the coding standards.
+5. Ensure your code is documented.
+6. Push your changes to your forked repository.
+7. Create a pull request against the main repository.
+8. Provide a clear description of your changes and any relevant information.
 
 ## License
 XPorted is licensed under the MIT License. See the [LICENSE](../LICENSE) file for more details.
