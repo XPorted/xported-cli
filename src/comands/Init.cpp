@@ -12,7 +12,7 @@
  * This file is used to store the configuration for the xported CLI.
  *
  * Configuration options:
- * schema = v1 # The schema version of the configuration file.
+ * schema = "v1" # The schema version of the configuration file.
  *
  * [owner]
  * name = "Your Name"
