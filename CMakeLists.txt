@@ -11,12 +11,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Source files - include both main source files and command implementations
 file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB_RECURSE UTILITY_SOURCES "utils/*.cpp")
 
 # Include directories
 include_directories(include)
 
 # Add the executable
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES} ${UTILITY_SOURCES})
 
 # Install target
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)

@@ -2,6 +2,7 @@
 
 #include "Command.hpp"
 #include "CommandRegistry.hpp"
+#include "utils/ParseArgs.hpp"
 
 class VersionCommand : public Command {
 public:
@@ -18,9 +19,9 @@ public:
 		};
 	}
 
-	int execute(const std::vector<std::string> &) override {
-		std::cout << "xported-cli v0.1.0\n";
-		return 0;	// Success
+	int execute(const std::vector<CommandLineArgument> &) override {
+		std::cout << "Xported CLI version 1.0.0\n";	 // Replace with actual version
+		return 0;									 // Success
 	}
 };
 

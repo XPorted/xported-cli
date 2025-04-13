@@ -3,6 +3,7 @@
 
 #include "Command.hpp"
 #include "CommandRegistry.hpp"
+#include "utils/ParseArgs.hpp"
 
 class Help : public Command {
 public:
@@ -23,56 +24,51 @@ public:
 		};
 	}
 
-	int execute(const std::vector<std::string> &args) override {
-		auto &registry = CommandRegistry::instance();
-
-		// Check if a specific command is requested
-		auto it = std::find_if(args.begin(), args.end(), [](const std::string &arg) {
-			return arg.rfind("--command=", 0) == 0;	 // Check if argument starts with "--command="
-		});
-
-		if (it != args.end()) {
-			// Extract the command name
-			std::string commandName = it->substr(10);  // Remove "--command="
-			auto command = registry.getCommand(commandName);
-			if (command) {
-				std::cout << commandName << ": " << command->description() << "\n";
-
-				// Show command arguments
-				auto cmdArgs = command->arguments();
-				if (!cmdArgs.empty()) {
-					std::cout << "\nArguments:\n";
-					for (const auto &arg : cmdArgs) {
-						std::cout << "  --" << arg.name;
-						if (!arg.required)
-							std::cout << " (optional, default: " << (arg.defaultValue.empty() ? "none" : arg.defaultValue) << ")";
-						std::cout << ": " << arg.description << "\n";
-					};
-				};
-
-				// Show usage examples
-				auto usageExamples = command->usage();
-				if (!usageExamples.empty()) {
-					std::cout << "\nUsage:\n";
-					for (const auto &example : usageExamples) {
-						std::cout << "  " << example << "\n";
-					};
-				};
-
-				return 0;  // Success
-			} else {
-				std::cout << "Command '" << commandName << "' not found.\n";
-				return 1;  // Error - command not found
-			};
-		} else {
-			// Show all commands
+	int execute(const std::vector<CommandLineArgument> &args) override {
+		if (args.empty()) {
+			// Show help for all commands
 			std::cout << "Available commands:\n";
-			for (const auto &[name, cmd] : registry.allCommands()) {
-				std::cout << "  " << name << ": " << cmd->description() << "\n";
+			for (const auto &[name, command] : CommandRegistry::instance().allCommands()) {
+				std::cout << "  " << name << ": " << command->description() << "\n";
 			};
-			std::cout << "\nUse 'help --command=<command>' for more information about a specific command.\n";
-			return 0;  // Success
+			std::cout << "\nUse 'xported-cli help --command=<command>' for more information on a specific command.\n";
+		} else {
+			// Show help for a specific command
+			auto it = std::find_if(args.begin(), args.end(),
+								   [](const CommandLineArgument &arg) { return arg.name == "command"; });
+			if (it != args.end()) {
+				const std::string commandName = it->value;
+				Command *command = CommandRegistry::instance().getCommand(commandName);
+				if (command) {
+					std::cout << command->name() << ": " << command->description() << "\n";
+					std::cout << "Arguments:\n";
+					for (const auto &arg : command->arguments()) {
+						std::cout << "  " << arg.name << ": " << arg.description;
+						if (!arg.defaultValue.empty()) {
+							std::cout << " (default: " << arg.defaultValue << ")";
+						};
+						std::cout << "\n";
+					};
+					std::cout << "Usage:\n";
+					for (const auto &usage : command->usage()) {
+						std::cout << "  " << usage << "\n";
+					};
+				} else {
+					std::cerr << "Error: Command '" << commandName
+							  << "' not found.\n";
+					return 1;  // Error code for command not found
+				};
+			} else {
+				// Default to showing general help information
+				std::cout << "Available commands:\n";
+				for (const auto &[name, command] : CommandRegistry::instance().allCommands()) {
+					std::cout << "  " << name << ": " << command->description() << "\n";
+				};
+				std::cout << "\nUse 'xported-cli help --command=<command>' for more information on a specific command.\n";
+				return 0;  // Success
+			};
 		};
+		return 0;  // Success
 	}
 };
 

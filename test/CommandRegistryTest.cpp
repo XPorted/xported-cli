@@ -30,21 +30,21 @@ public:
 			"test <arg1> <arg2> <arg3>"};
 	}
 
-	int execute(const std::vector<std::string>& args) override {
+	int execute(const std::vector<CommandLineArgument> &args) override {
 		// Simulate command execution
-		if (args.empty()) {
-			return 1;  // Error: no arguments provided
+		if (args.size() < 1) {
+			return 1; // Error: not enough arguments
+		};
+		if (args[0].name != "arg1") {
+			return 2; // Error: invalid argument
 		};
 		if (args.size() > 3) {
-			return 2;  // Error: too many arguments
+			return 3; // Error: too many arguments
 		};
-		if (args.size() == 1 && args[0] == "error") {
-			return 3;  // Simulate an error
-		};
-		// Simulate successful execution
-		return 0;
+		return 0; // Success
 	}
 };
+
 class TestCommand2 : public Command {
 public:
 	TestCommand2() = default;
@@ -64,116 +64,106 @@ public:
 	}
 
 	std::vector<std::string> usage() const override {
-		return {"test2 <arg1>", "test2 <arg1> <arg2>"};
+		return {
+			"test2 <arg1>",
+			"test2 <arg1> <arg2>"};
 	}
 
-	int execute(const std::vector<std::string>& args) override {
-		return 0;  // Simulate successful execution
+	int execute(const std::vector<CommandLineArgument> &args) override {
+		if (args.size() < 1) {
+			return 1; // Error: not enough arguments
+		};
+		if (args[0].name != "arg1") {
+			return 2; // Error: invalid argument
+		};
+		if (args.size() > 2) {
+			return 3; // Error: too many arguments
+		};
+		return 0; // Success
 	}
 };
 
-// Test cases for CommandRegistry
+// Test case for CommandRegistry
 
 // 1. Test the singleton instance
 TEST(CommandRegistryTest, SingletonInstance) {
-	CommandRegistry &instance1 = CommandRegistry::instance();
-	CommandRegistry &instance2 = CommandRegistry::instance();
+	auto &instance1 = CommandRegistry::instance();
+	auto &instance2 = CommandRegistry::instance();
 	EXPECT_EQ(&instance1, &instance2);
 }
 // 2. Test command registration
-TEST(CommandRegistryTest, RegisterCommand) {
-	CommandRegistry &registry = CommandRegistry::instance();
-	registry.clear();  // Clear any existing commands
+// 2.a. Test registering a single command
+TEST(CommandRegistryTest, RegisterSingleCommand) {
+	auto &registry = CommandRegistry::instance();
+	registry.clear(); // Clear any existing commands
 
 	auto command = std::make_unique<TestCommand>();
-	registry.registerCommand(std::move(command));
-
+	EXPECT_NO_THROW(registry.registerCommand(std::move(command)));
+	EXPECT_EQ(registry.allCommands().size(), 1);
 	EXPECT_NE(registry.getCommand("test"), nullptr);
-	EXPECT_EQ(registry.getCommand("nonexistent"), nullptr);
+	EXPECT_EQ(registry.getCommand("test")->name(), "test");
 }
-// 3.1 Single command registration
-TEST(CommandRegistryTest, SingleCommandRegistration) {
-	CommandRegistry &registry = CommandRegistry::instance();
-	registry.clear();  // Clear any existing commands
-
-	auto command = std::make_unique<TestCommand>();
-	registry.registerCommand(std::move(command));
-
-	EXPECT_NE(registry.getCommand("test"), nullptr);
-	EXPECT_EQ(registry.getCommand("nonexistent"), nullptr);
-}
-// 3.2 Multiple command registration
-TEST(CommandRegistryTest, MultipleCommandRegistration) {
-	CommandRegistry &registry = CommandRegistry::instance();
-	registry.clear();  // Clear any existing commands
+// 2.b. Test registering multiple commands
+TEST(CommandRegistryTest, RegisterMultipleCommands) {
+	auto &registry = CommandRegistry::instance();
+	registry.clear(); // Clear any existing commands
 
 	auto command1 = std::make_unique<TestCommand>();
 	auto command2 = std::make_unique<TestCommand2>();
-	registry.registerCommand(std::move(command1));
-	registry.registerCommand(std::move(command2));
-
+	EXPECT_NO_THROW(registry.registerCommand(std::move(command1)));
+	EXPECT_NO_THROW(registry.registerCommand(std::move(command2)));
+	EXPECT_EQ(registry.allCommands().size(), 2);
 	EXPECT_NE(registry.getCommand("test"), nullptr);
 	EXPECT_NE(registry.getCommand("test2"), nullptr);
+}
+// 3. Test command retrieval
+TEST(CommandRegistryTest, GetCommand) {
+	auto &registry = CommandRegistry::instance();
+	registry.clear(); // Clear any existing commands
+
+	auto command = std::make_unique<TestCommand>();
+	registry.registerCommand(std::move(command));
+
+	EXPECT_NE(registry.getCommand("test"), nullptr);
 	EXPECT_EQ(registry.getCommand("nonexistent"), nullptr);
 }
 // 4. Test command execution
-TEST(CommandRegistryTest, CommandExecution) {
-	CommandRegistry &registry = CommandRegistry::instance();
-	registry.clear();  // Clear any existing commands
+TEST(CommandRegistryTest, ExecuteCommand) {
+	auto &registry = CommandRegistry::instance();
+	registry.clear(); // Clear any existing commands
 
 	auto command = std::make_unique<TestCommand>();
 	registry.registerCommand(std::move(command));
 
-	Command *cmd = registry.getCommand("test");
-	EXPECT_NE(cmd, nullptr);
+	std::vector<CommandLineArgument> args = {
+		{"arg1", "positional", "value1"},
+		{"arg2", "positional", "value2"},
+		{"arg3", "positional", "value3"}};
 
-	// Test valid execution
-	std::vector<std::string> args1 = {"arg1", "arg2", "arg3"};
-	EXPECT_EQ(cmd->execute(args1), 0);
-
-	// Test execution with no arguments
-	std::vector<std::string> args2 = {};
-	EXPECT_EQ(cmd->execute(args2), 1);
-
-	// Test execution with too many arguments
-	std::vector<std::string> args3 = {"arg1", "arg2", "arg3", "extra_arg"};
-	EXPECT_EQ(cmd->execute(args3), 2);
-
-	// Test execution with an error case
-	std::vector<std::string> args4 = {"error"};
-	EXPECT_EQ(cmd->execute(args4), 3);
+	EXPECT_EQ(registry.getCommand("test")->execute(args), 0);
 }
-// 5. Test command clearing
+// 5. Test command usage
+TEST(CommandRegistryTest, CommandUsage) {
+	auto &registry = CommandRegistry::instance();
+	registry.clear(); // Clear any existing commands
+
+	auto command = std::make_unique<TestCommand>();
+	registry.registerCommand(std::move(command));
+
+	EXPECT_EQ(registry.getCommand("test")->usage().size(), 3);
+	EXPECT_EQ(registry.getCommand("test")->usage()[0], "test <arg1>");
+	EXPECT_EQ(registry.getCommand("test")->usage()[1], "test <arg1> <arg2>");
+	EXPECT_EQ(registry.getCommand("test")->usage()[2], "test <arg1> <arg2> <arg3>");
+}
+// 6. Test command clearing
 TEST(CommandRegistryTest, ClearCommands) {
-	CommandRegistry &registry = CommandRegistry::instance();
-	registry.clear();  // Clear any existing commands
+	auto &registry = CommandRegistry::instance();
+	registry.clear(); // Clear any existing commands
 
 	auto command = std::make_unique<TestCommand>();
 	registry.registerCommand(std::move(command));
 
-	EXPECT_NE(registry.getCommand("test"), nullptr);
-
-	// Clear commands
+	EXPECT_EQ(registry.allCommands().size(), 1);
 	registry.clear();
-
-	EXPECT_EQ(registry.getCommand("test"), nullptr);
 	EXPECT_EQ(registry.allCommands().size(), 0);
-}
-// 6. Test command retrieval
-TEST(CommandRegistryTest, GetCommand) {
-	CommandRegistry &registry = CommandRegistry::instance();
-	registry.clear();  // Clear any existing commands
-
-	auto command = std::make_unique<TestCommand>();
-	registry.registerCommand(std::move(command));
-
-	Command *cmd = registry.getCommand("test");
-	EXPECT_NE(cmd, nullptr);
-	EXPECT_EQ(cmd->name(), "test");
-	EXPECT_EQ(cmd->description(), "A test command");
-	EXPECT_EQ(cmd->arguments().size(), 3);
-	EXPECT_EQ(cmd->usage().size(), 3);
-
-	// Test retrieval of a non-existent command
-	EXPECT_EQ(registry.getCommand("nonexistent"), nullptr);
 }

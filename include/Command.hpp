@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 
+#include "utils/ParseArgs.hpp"
+
 /**
  * @brief Represents a command argument with its properties
  */
@@ -44,7 +46,7 @@ struct CommandArgument {
  * 		};
  * 	}
  *
- * 	void execute(const std::vector<std::string> &args) override {
+ * 	void execute(const std::vector<CommandLineArgument> &args) override {
  * 		// Command logic goes here
  * 	}
  * };
@@ -95,5 +97,5 @@ public:
 	 *
 	 * @returns int 0 on success, or a non-zero error code on failure.
 	 */
-	virtual int execute(const std::vector<std::string> &args) = 0;
+	virtual int execute(const std::vector<CommandLineArgument> &args) = 0;
 };

@@ -1,11 +1,13 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <string>
 #include <vector>
 
 #include "Command.hpp"
 #include "CommandRegistry.hpp"
+#include "utils/FindInit.hpp"
 
 class Init : public Command {
 public:
@@ -27,77 +29,88 @@ public:
 		};
 	}
 
-	int execute(const std::vector<std::string>& args) override {
+	int execute(const std::vector<CommandLineArgument> &args) override {
+		// Get directory argument from args if provided. It should be the first positional argument.
+		std::string directory;
+		if (!args.empty() && args[0].type == "positional") {
+			directory = args[0].value;
+
+			// Check if the argument is a relative or absolute path
+			if (std::filesystem::path(directory).is_relative()) {
+				// If it's a relative path, convert it to an absolute path
+				directory = std::filesystem::absolute(directory).string();
+			} else {
+				// If it's an absolute path, just use it as is
+				directory = std::filesystem::path(directory).string();
+			};
+		} else {
+			// If no directory is provided, use the current working directory
+			directory = std::filesystem::current_path().string();
+		};
+
+		// Check if the directory valid
+		if (directory.empty()) {
+			std::cerr << "Error: Directory is empty.\n";
+			std::cerr << "Usage: xported-cli init <directory>\n";
+			return 1;
+		} else if (!std::filesystem::is_directory(directory)) {
+			std::cerr << "Error: Path is not a directory.\n";
+			std::cerr << "Usage: xported-cli init <directory>\n";
+			return 1;
+		};
+
+		// Use regex to check if the directory name contains invalid characters
+		std::regex invalidChars("[^a-zA-Z0-9_\\-\\./ ]");
+		if (std::regex_search(directory, invalidChars)) {
+			std::cerr << "Error: Directory name contains invalid characters.\n";
+			std::cerr << "Usage: xported-cli init <directory>\n";
+			return 1;
+		};
+
+		// Check if --force option is provided
 		bool force = false;
-		std::filesystem::path targetDir;  // Will be set to the first non-flag argument
-		bool dirSpecified = false;
-
-		// Start from index 0, but skip "init" as the command name
-		size_t startIdx = 0;
-		if (!args.empty() && args[0] == "init") {
-			startIdx = 1;
-		};
-
-		for (size_t i = startIdx; i < args.size(); ++i) {
-			const auto& arg = args[i];
-			if (arg == "--force") {
+		for (const auto &arg : args) {
+			if (arg.type == "flag" && arg.name == "force") {
 				force = true;
-			} else if (arg[0] != '-' && !dirSpecified) {
-				// Take the first non-flag argument as the target directory
-				targetDir = arg;
-				dirSpecified = true;
+				break;
 			};
 		};
 
-		// If no directory was specified, use the current directory
-		if (!dirSpecified) {
-			targetDir = std::filesystem::current_path();
-		};
-
-		// Create the directory if it doesn't exist
-		if (!std::filesystem::exists(targetDir)) {
-			if (!std::filesystem::create_directories(targetDir)) {
-				std::cout << "Error: Unable to create directory " << targetDir << std::endl;
-				return 1;
-			};
-			std::cout << "Created directory: " << targetDir << std::endl;
-		};
-
-		std::filesystem::path configPath = targetDir / "xported.toml";
-		if (std::filesystem::exists(configPath) && !force) {
-			std::cout << "Error: " << configPath << " already exists. Use --force to overwrite." << std::endl;
+		// Find the initialization file in the given directory or its parent directories
+		std::string initFile = FindInit(directory);
+		if (!initFile.empty() && !force) {
+			std::cerr << "Error: Initialization file already exists in " << initFile << ".\n";
+			std::cerr << "If you want to overwrite it, use the --force option.\n";
+			std::cerr << "Usage: xported-cli init <directory> --force\n";
 			return 1;
 		};
 
-		std::ofstream configFile(configPath);
-		if (!configFile.is_open()) {
-			std::cout << "Error: Unable to create " << configPath << std::endl;
+		// Create the initialization file in the specified directory
+		std::ofstream outFile(directory + "/.xported");
+		if (!outFile) {
+			std::cerr << "Error: Could not create initialization file in the directory.\n";
+			std::cerr << "Usage: xported-cli init <directory>\n";
 			return 1;
 		};
+		outFile << "# xported.toml" << std::endl
+				<< "# This file is used to store the configuration for the xported CLI." << std::endl
+				<< "" << std::endl
+				<< "schema = \"v1\" # The schema version of the configuration file." << std::endl
+				<< "" << std::endl
+				<< "[owner]" << std::endl
+				<< "name = \"Your Name\"" << std::endl
+				<< "email = \"example@email.com\"" << std::endl
+				<< "" << std::endl
+				<< "[[contributors]]" << std::endl
+				<< "name = \"Contributor Name\"" << std::endl
+				<< "email = \"contributor@email.com\"" << std::endl
+				<< "" << std::endl
+				<< "[access.http]" << std::endl
+				<< "enabled = true" << std::endl
+				<< "port = 8080" << std::endl;
 
-		// Write the default configuration to the file
-		configFile << "# xported.toml\n"
-				   << "# Configuration for xported CLI\n\n"
-				   << "schema = \"v1\"\n\n"
-				   << "[owner]\n"
-				   << "name = \"Your Name\"\n"
-				   << "email = \"example@email.com\"\n\n"
-				   << "[[contributors]]\n"
-				   << "name = \"Contributor Name\"\n"
-				   << "email = \"contributor@email.com\"\n\n"
-				   << "[files]\n"
-				   << "includes = [\"*.txt\", \"src/*.js\", \"main.cpp\"]\n"
-				   << "excludes = [\"*.log\", \"*.tmp\"]\n\n"
-				   << "[access.http]\n"
-				   << "enabled = true\n"
-				   << "port = 8080\n";
-
-		configFile.close();
-
-		std::cout << "Initialized new xported directory in "
-				  << std::filesystem::absolute(targetDir) << std::endl;
-		std::cout << "Configuration saved to " << configPath << std::endl;
-
+		outFile.close();
+		std::cout << "Initialization file created successfully in " << directory << ".\n";
 		return 0;
 	}
 };

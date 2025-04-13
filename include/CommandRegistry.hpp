@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Command.hpp"
+#include "utils/ParseArgs.hpp"
 
 /**
  * @brief Singleton class to manage commands creation and execution.

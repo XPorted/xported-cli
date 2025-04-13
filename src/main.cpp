@@ -2,31 +2,50 @@
 #include <vector>
 
 #include "CommandRegistry.hpp"
+#include "utils/ParseArgs.hpp"
 
 int main(int argc, char *argv[]) {
 	// Get the singleton instance of CommandRegistry
 	auto &registry = CommandRegistry::instance();
 	std::vector<std::string> args(argv + 1, argv + argc);
 
-	// Check if the command is registered
+	// Parse command-line arguments
+	auto parsedArgs = ParseArgs(argc, argv);
 
-	// Default to "help" if no command is provided
-	if (args.empty()) {
-		if (auto *helpCmd = registry.getCommand("help")) {
-			helpCmd->execute({});
+	// Get the first positional argument as the command
+	CommandLineArgument commandArg;
+	if (!args.empty()) {
+		commandArg = parsedArgs[0];
+		if (commandArg.type != "positional") {
+			std::cerr << "Invalid command format.\n";
+			std::cerr << "Usage: xported-cli <command> [options]\n";
+			std::cerr << "Use 'xported-cli help' for more information.\n";
+			return 1; // Error code for invalid command format
 		};
-		return 1;
-	};
-
-	// Check if the command is registered
-	const std::string commandName = args[0];
-	int returnCode = 0;
-	if (auto *cmd = registry.getCommand(commandName)) {
-		returnCode = cmd->execute(args);
 	} else {
-		std::cerr << "Error: Unknown command '" << commandName << "'\n";
-		returnCode = 1;
+		std::cerr << "No command provided.\n";
+		std::cerr << "Use 'xported-cli help' for more information.\n";
+		return 1; // Error code for no command
 	};
 
-	return returnCode;
+	// Check if the command exists in the registry
+	Command *cmd = registry.getCommand(commandArg.name);
+	if (cmd) {
+		// Remove the command name from parsedArgs
+		parsedArgs.erase(parsedArgs.begin());
+		// Execute the command with the remaining arguments
+		// Note: The command's execute method should handle its own argument parsing
+		int result = cmd->execute(parsedArgs);
+		if (result != 0) {
+			std::cerr << "Command execution failed with error code: " << result << "\n";
+			return result;
+		};
+	} else {
+		std::cerr << "Command '" << commandArg.name << "' not found.\n";
+		return 1; // Error code for command not found
+	};
+
+	// Clear the registry
+	registry.clear();
+	return 0; // Success
 }
