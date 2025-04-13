@@ -82,7 +82,7 @@ public:
 		};
 	}
 
-	int execute(const std::vector<std::string> &args) override {
+	int execute(const std::vector<CommandLineArgument> &args) {
 		// Command implementation goes here
 		std::cout << "MyCommand executed with " << args.size() << " arguments\n";
 		for (const auto &arg : args) {
