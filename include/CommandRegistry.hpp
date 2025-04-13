@@ -42,6 +42,15 @@ public:
 	void registerCommand(std::unique_ptr<Command> cmd) {
 		commands_[cmd->name()] = std::move(cmd);
 	}
+	/**
+	 * @brief Unregister a command by name.
+	 */
+	void unregisterCommand(const std::string &name) {
+		auto it = commands_.find(name);
+		if (it != commands_.end()) {
+			commands_.erase(it);
+		};
+	};
 
 	Command *getCommand(const std::string &name) {
 		auto it = commands_.find(name);

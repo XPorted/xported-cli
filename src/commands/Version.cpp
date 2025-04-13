@@ -20,7 +20,7 @@ public:
 	}
 
 	int execute(const std::vector<CommandLineArgument> &) override {
-		std::cout << "Xported CLI version 1.0.0\n";	 // Replace with actual version
+		std::cout << "Xported CLI version 0.1.0\n";	 // Replace with actual version
 		return 0;									 // Success
 	}
 };
