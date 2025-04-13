@@ -26,19 +26,23 @@ FetchContent_MakeAvailable(googletest)
 # Individual test executables
 add_executable(command_registry_test CommandRegistryTest.cpp)
 add_executable(command_test CommandTest.cpp)
+add_executable(version_test commands/VersionTest.cpp)
 
 # Link libraries for each test
 target_link_libraries(command_registry_test gtest gtest_main pthread)
 target_link_libraries(command_test gtest gtest_main pthread)
+target_link_libraries(version_test gtest gtest_main pthread)
 
 # Add individual tests
 add_test(NAME command_registry_test COMMAND command_registry_test)
 add_test(NAME command_test COMMAND command_test)
+add_test(NAME version_test COMMAND version_test)
 
 # Optional: Keep the all_tests target if you still want it
 add_executable(all_tests
 	CommandRegistryTest.cpp
 	CommandTest.cpp
+	commands/VersionTest.cpp
 )
 target_link_libraries(all_tests gtest gtest_main pthread)
 add_test(NAME all_tests COMMAND all_tests)
