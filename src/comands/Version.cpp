@@ -4,7 +4,7 @@
 #include "CommandRegistry.hpp"
 #include "utils/ParseArgs.hpp"
 
-class VersionCommand : public Command {
+class Version : public Command {
 public:
 	std::string name() const override { return "version"; }
 	std::string description() const override { return "Show the version"; }
@@ -30,7 +30,7 @@ namespace {
 	struct Registrar {
 		Registrar() {
 			CommandRegistry::instance().registerCommand(
-				std::make_unique<VersionCommand>());
+				std::make_unique<Version>());
 		}
 	} autoRegister;
 };	// namespace
