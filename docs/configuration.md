@@ -39,20 +39,7 @@ email = "contributor@email.com"
 name = "Second Contributor Name"
 email = "contributor2@email.com"
 ```
-
-### 4. `files`
-- **Type**: Table
-- **Description**: Contains settings related to file management.
-- **Fields**:
-  - `includes`: An array of file patterns to include in the file management operations.
-  - `excludes`: An array of file patterns to exclude from the file management operations.
-- **Example**:
-```toml
-[files]
-includes = ["*.txt", "src/*.js", "main.cpp"]
-excludes = ["*.log", "*.tmp"]
-```
-### 5. `access`
+### 4. `access`
 - **Type**: Table
 - **Description**: Contains settings related to remote access.
 - **Fields**:
@@ -69,7 +56,6 @@ port = 8080
 ## Customizing the Configuration
 You can customize the configuration file to suit your needs. Here are some common modifications:
 - **Adding Contributors**: You can add multiple contributors by repeating the `[[contributors]]` section.
-- **Modifying File Patterns**: Adjust the `includes` and `excludes` arrays to specify which files should be included or excluded from operations.
 - **Changing Access Settings**: Modify the `access` section to enable or disable remote access and change the port number.
 
 ## Example Configuration
@@ -87,10 +73,6 @@ email = "example@email.com"
 [[contributors]]
 name = "Contributor Name"
 email = "contributor@email.com"
-
-[files]
-includes = ["*.txt", "src/*.js", "main.cpp"]
-excludes = ["*.log", "*.tmp"]
 
 [access.http]
 enabled = true
