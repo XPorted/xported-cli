@@ -1,0 +1,77 @@
+.TH XPORTED-CLI 1 "April 2025" "XPorted CLI" "User Commands"
+.SH NAME
+xported-cli \- A fast command-line tool for local and remote file management
+.SH SYNOPSIS
+.B xported-cli
+.I <command>
+[arguments]
+.SH DESCRIPTION
+.B xported-cli
+is a command-line tool designed for efficient management of both local and remote files.
+It offers functionality for file creation, deletion, movement, and transfer across various protocols.
+.SH COMMANDS
+.TP
+.B init [directory] [--force]
+Initialize a new directory with an .xported configuration file.
+If no directory is specified, initializes in the current directory.
+Use --force to overwrite an existing configuration.
+.TP
+.B help [--command=<command_name>]
+Display help information. If a command is specified, shows detailed help for that command.
+.TP
+.B version
+Display the current version of xported-cli.
+.SH CONFIGURATION
+XPorted CLI uses a TOML configuration file named
+.I .xported
+stored in the root of the directory where the CLI is executed. This file contains:
+.TP
+.B schema
+Specifies the version of the configuration schema (e.g., "v1").
+.TP
+.B owner
+Contains information about the owner (name, email).
+.TP
+.B contributors
+Array of tables with contributor information (name, email).
+.TP
+.B access
+Contains settings for remote access, such as HTTP configuration.
+.SH EXAMPLES
+.TP
+Initialize in the current directory:
+.B xported-cli init
+.TP
+Initialize in a specific directory:
+.B xported-cli init /path/to/directory
+.TP
+Display help for all commands:
+.B xported-cli help
+.TP
+Display help for a specific command:
+.B xported-cli help --command=init
+.TP
+Check version:
+.B xported-cli version
+.SH FILES
+.TP
+.I .xported
+Configuration file for the xported-cli tool.
+.SH SEE ALSO
+Full documentation is available at:
+.TP
+Installation:
+.I docs/installation.md
+.TP
+Getting Started:
+.I docs/getting-started.md
+.TP
+Configuration:
+.I docs/configuration.md
+.TP
+Development:
+.I docs/development.md
+.SH BUGS
+Please report bugs on the project's issue tracker.
+.SH AUTHOR
+XPorted Team
