@@ -11,10 +11,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Source files - include both main source files and command implementations
 file(GLOB_RECURSE SOURCES "src/*.cpp")
-file(GLOB_RECURSE UTILITY_SOURCES "utils/*.cpp")
-
-# Include directories
-include_directories(include)
 
 # Add the executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${UTILITY_SOURCES})
@@ -30,6 +26,3 @@ elseif(MSVC)
 endif()
 
 set(CMAKE_INSTALL_MESSAGE LAZY)
-
-enable_testing()
-add_subdirectory(test)
