@@ -1,7 +1,7 @@
 # Configuration
 
 ## Overview
-XPorted CLI uses a TOML configuration file named `xported.toml` stored in the root of the directory where the CLI is executed. This file contains settings that control the behavior of the CLI, including file management options, remote server configurations, and other preferences.
+XPorted CLI uses a TOML configuration file named `.xported` stored in the root of the directory where the CLI is executed. This file contains settings that control the behavior of the CLI, including file management options, remote server configurations, and other preferences.
 
 ## Configuration File Structure
 The configuration file is structured in a TOML format, which is easy to read and write.
@@ -75,7 +75,7 @@ You can customize the configuration file to suit your needs. Here are some commo
 ## Example Configuration
 Here is an example of a more complex configuration file:
 ```toml
-# xported.toml
+# .xported
 # This file is used to store the configuration for the xported CLI.
 
 schema = "v1" # The schema version of the configuration file.

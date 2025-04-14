@@ -21,7 +21,7 @@ xported-cli init /path/to/directory
 xported-cli init --force
 ```
 
-This creates a `xported.toml` configuration file that defines your directory settings.
+This creates a `.xported` configuration file that defines your directory settings.
 
 ## Getting Help
 
@@ -37,7 +37,7 @@ xported-cli help --command=init
 
 ## Next Steps
 Now that you have initialized your directory, you can:
-- Configure your directory by editing the `xported.toml` file
+- Configure your directory by editing the `.xported` file
 - Learn about specific commands and their options in the [Usage](usage.md) section
 - Explore the [Configuration](configuration.md) section for more details on the configuration file
 - Check out the [Development](development.md) section if you're interested in contributing to XPorted

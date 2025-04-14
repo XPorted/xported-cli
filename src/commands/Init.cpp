@@ -92,7 +92,7 @@ public:
 			std::cerr << "Usage: xported-cli init <directory>\n";
 			return 1;
 		};
-		outFile << "# xported.toml" << std::endl
+		outFile << "# .xported" << std::endl
 				<< "# This file is used to store the configuration for the xported CLI." << std::endl
 				<< "" << std::endl
 				<< "schema = \"v1\" # The schema version of the configuration file." << std::endl
