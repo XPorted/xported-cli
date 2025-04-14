@@ -17,16 +17,20 @@ public:
 	std::vector<CommandArgument> arguments() const override {
 		return {
 			{"--force", "Overwrite existing files if they exist.", false, ""},
+			{"--xcludes", "Create a .xcludes file.", false, ""},
 			{"<directory>", "The directory to initialize the directory in.", false, ""}};
 	}
 
 	std::vector<std::string> usage() const override {
 		return {
-			"xported-cli init [--force]",
-			"xported-cli init <directory>",
-			"xported-cli init <directory> --force",
 			"xported-cli init",
-		};
+			"xported-cli init [--force]",
+			"xported-cli init [--xcludes]",
+			"xported-cli init [--force] [--xcludes]",
+			"xported-cli init <directory>",
+			"xported-cli init <directory> [--force]",
+			"xported-cli init <directory> [--xcludes]",
+			"xported-cli init <directory> [--force] [--xcludes]"};
 	}
 
 	int execute(const std::vector<CommandLineArgument> &args) override {
@@ -67,7 +71,7 @@ public:
 			return 1;
 		};
 
-		// Check if --force option is provided
+		// Check if --force flag is provided
 		bool force = false;
 		for (const auto &arg : args) {
 			if (arg.type == "flag" && arg.name == "force") {
@@ -76,19 +80,19 @@ public:
 			};
 		};
 
-		// Find the initialization file in the given directory or its parent directories
+		// Find the configuration file in the given directory or its parent directories
 		std::string initFile = FindInit(directory);
 		if (!initFile.empty() && !force) {
-			std::cerr << "Error: Initialization file already exists in " << initFile << ".\n";
-			std::cerr << "If you want to overwrite it, use the --force option.\n";
+			std::cerr << "Error: Configuration file already exists in " << initFile << ".\n";
+			std::cerr << "If you want to overwrite it, use the --force flag.\n";
 			std::cerr << "Usage: xported-cli init <directory> --force\n";
 			return 1;
 		};
 
-		// Create the initialization file in the specified directory
+		// Create the configuration file in the specified directory
 		std::ofstream outFile(directory + "/.xported");
 		if (!outFile) {
-			std::cerr << "Error: Could not create initialization file in the directory.\n";
+			std::cerr << "Error: Could not create configuration file in the directory.\n";
 			std::cerr << "Usage: xported-cli init <directory>\n";
 			return 1;
 		};
@@ -110,7 +114,31 @@ public:
 				<< "port = 8080" << std::endl;
 
 		outFile.close();
-		std::cout << "Initialization file created successfully in " << directory << ".\n";
+		std::cout << "Configuration file created successfully in " << directory << ".\n";
+
+		// Check if --xcludes flag is provided
+		bool xcludes = false;
+		for (const auto &arg : args) {
+			if (arg.type == "flag" && arg.name == "xcludes") {
+				xcludes = true;
+				break;
+			};
+		};
+		if (!xcludes)
+			return 0;
+
+		// Create the exclusion file alongside the configuration file
+		std::ofstream xcludesFile(directory + "/.xcludes");
+		if (!xcludesFile) {
+			std::cerr << "Error: Could not create exclusion file in the directory.\n";
+			return 1;
+		};
+		xcludesFile << "# .xcludes" << std::endl
+					<< "# This file is used to store excluded paths for the xported CLI." << std::endl
+					<< "" << std::endl;
+
+		xcludesFile.close();
+		std::cout << "Exclusion file created successfully in " << directory << ".\n";
 		return 0;
 	}
 };
