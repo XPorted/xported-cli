@@ -15,7 +15,7 @@ public:
 
 	std::vector<std::string> usage() const override {
 		return {
-			"version"  // Simple usage - just the command name
+			"xported-cli version"  // Simple usage - just the command name
 		};
 	}
 
