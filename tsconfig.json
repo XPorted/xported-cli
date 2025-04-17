@@ -1,8 +1,8 @@
 {
 	"compilerOptions": {
-		"target": "ES2020",
-		"module": "NodeNext",
-		"moduleResolution": "NodeNext",
+		"target": "ES2016",
+		"module": "es2020",
+		"moduleResolution": "Bundler",
 		"outDir": "dist",
 		"rootDir": "src",
 		"strict": false,
