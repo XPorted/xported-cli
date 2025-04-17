@@ -23,7 +23,7 @@ type CommandConfig = {
 	methods: string[];
 	parameters: Parameters;
 
-	action: (method: string, parameters: Parameters) => void | Promise<void>;
+	action: (method: string, parameters: Parameters, rawArguments: string[]) => void | Promise<void>;
 };
 
 class Command {
@@ -32,7 +32,7 @@ class Command {
 	description: string;
 	methods: string[];
 	parameters: Parameters;
-	private action: (method: string, parameters: Parameters) => void | Promise<void>;
+	private action: (method: string, parameters: Parameters, rawArguments: string[]) => void | Promise<void>;
 
 	constructor(
 		public command: CommandConfig = {
@@ -53,13 +53,13 @@ class Command {
 		this.action = command.action;
 	};
 
-	execute(rawArgs: string[]) {
+	execute(rawArguments: string[]) {
 		// Parse the raw parameters to extract methods and parameters
 		// If the command has requires a method, get the first argument
 		// and check if it is in the methods array
 		let method = '';
 		if (this.methods.length > 0) {
-			method = rawArgs[0];
+			method = rawArguments[0];
 			// Check if the method exists in the methods array
 			if (!method) {
 				console.error(`A method is required for the command "${this.name}".`);
@@ -78,7 +78,7 @@ class Command {
 			};
 
 			// Remove the method from the raw arguments
-			rawArgs = rawArgs.slice(1);
+			rawArguments = rawArguments.slice(1);
 		};
 
 		// Parse the parameters
@@ -90,10 +90,10 @@ class Command {
 			// Check the parameter type
 			if (parameter.type === 'parameter') {
 				// Find the parameter in the raw arguments
-				const paramIndex = rawArgs.findIndex(arg => arg === `--${parameter.name}`);
+				const paramIndex = rawArguments.findIndex(arg => arg === `--${parameter.name}`);
 				if (paramIndex !== -1) {
 					// If the parameter is found, remove it from the raw arguments
-					rawArgs.splice(paramIndex, 1);
+					rawArguments.splice(paramIndex, 1);
 					// Add the parameter to the parameters array
 					parameters.push(parameter);
 				} else if (parameter.required) {
@@ -103,15 +103,15 @@ class Command {
 				};
 			} else if (parameter.type === 'valuedParameter') {
 				// Find the parameter in the raw arguments
-				const paramIndex = rawArgs.findIndex(arg => arg.startsWith(`--${parameter.name}`));
+				const paramIndex = rawArguments.findIndex(arg => arg.startsWith(`--${parameter.name}`));
 				if (paramIndex !== -1) {
 					// If the parameter is found, remove it from the raw arguments
-					const paramValue = rawArgs[paramIndex + 1];
+					const paramValue = rawArguments[paramIndex + 1];
 					if (!paramValue) {
 						console.error(`Missing value for parameter "--${parameter.name}" for the command "${this.name}".`);
 						process.exit(1);
 					};
-					rawArgs.splice(paramIndex, 2);
+					rawArguments.splice(paramIndex, 2);
 					// Add the parameter to the parameters array
 					parameters.push({
 						...parameter,
@@ -125,7 +125,7 @@ class Command {
 			};
 			i++;
 		};
-		this.action(method, parameters);
+		this.action(method, parameters, rawArguments);
 	};
 };
 

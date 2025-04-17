@@ -14,7 +14,7 @@ const Help = new Command({
 			required: false
 		}
 	],
-	action: async (option, parameters) => {
+	action: async (option, parameters, rawArguments) => {
 		const CommandRegistry = (await import('../utils/CommandRegistry.js')).default;
 
 		const commandParameter = parameters.find(param => param.name === 'command') as ValuedParameter | undefined;
