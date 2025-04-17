@@ -1,6 +1,6 @@
 {
 	"name": "xported-cli",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"description": "> A fast command-line tool for local and remote file management.",
 	"main": "dist/index.js",
 	"bin": {
@@ -25,7 +25,7 @@
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
-	"type": "commonjs",
+	"type": "module",
 	"bugs": {
 		"url": "https://github.com/XPorted/xported-cli/issues"
 	},
@@ -39,8 +39,5 @@
 		"prettier": "^3.5.3",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.8.3"
-	},
-	"dependencies": {
-		"commander": "^13.1.0"
 	}
 }
