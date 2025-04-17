@@ -16,14 +16,14 @@ type ValuedParameter = {
 
 type Parameters = Array<Parameter | ValuedParameter>;
 
-type CommandOptions = {
+type CommandConfig = {
 	name: string;
 	category: 'general';
 	description: string;
 	methods: string[];
 	parameters: Parameters;
 
-	action: (option: string, parameters: Parameters) => void | Promise<void>;
+	action: (method: string, parameters: Parameters) => void | Promise<void>;
 };
 
 class Command {
@@ -32,10 +32,10 @@ class Command {
 	description: string;
 	methods: string[];
 	parameters: Parameters;
-	private action: (option: string, parameters: Parameters) => void | Promise<void>;
+	private action: (method: string, parameters: Parameters) => void | Promise<void>;
 
 	constructor(
-		public command: CommandOptions = {
+		public command: CommandConfig = {
 			name: '',
 			category: 'general',
 			description: '',
@@ -131,4 +131,4 @@ class Command {
 
 export default Command;
 export { Command };
-export type { CommandOptions, Parameters, ValuedParameter, Parameter };
+export type { CommandConfig, Parameters, ValuedParameter, Parameter };
