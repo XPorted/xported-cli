@@ -18,21 +18,21 @@ type Parameters = Array<Parameter | ValuedParameter>;
 
 type CommandConfig = {
 	name: string;
-	category: 'general';
+	category: 'general' | 'test';
 	description: string;
 	methods: string[] | '*';
 	parameters: Parameters;
 
-	action: (method: string, parameters: Parameters, rawArguments: string[]) => void | Promise<void>;
+	action: (method: string, parameters: Parameters, rawArguments: string[]) => void | Promise<void | any>;
 };
 
 class Command {
 	name: string;
-	category: 'general';
+	category: 'general' | 'test';
 	description: string;
 	methods: string[] | '*';
 	parameters: Parameters;
-	private action: (method: string, parameters: Parameters, rawArguments: string[]) => void | Promise<void>;
+	private action: (method: string, parameters: Parameters, rawArguments: string[]) => void | Promise<void | any>;
 
 	constructor(
 		public command: CommandConfig = {
@@ -53,7 +53,7 @@ class Command {
 		this.action = command.action;
 	};
 
-	execute(rawArguments: string[]) {
+	async execute(rawArguments: string[]) {
 		// Parse the raw parameters to extract methods and parameters
 		// If the command has requires a method, get the first argument
 		// and check if it is in the methods array
@@ -63,7 +63,7 @@ class Command {
 			// Check if the method exists in the methods array
 			if (!method) {
 				console.error(`A method is required for the command "${this.name}".`);
-				process.exit(1);
+				return process.exit(1);
 			};
 			// Check if the method is valid:
 			// it should be in the methods array;
@@ -74,7 +74,7 @@ class Command {
 				method.startsWith('--')
 			) {
 				console.error(`Invalid method "${method}" for the command "${this.name}".`);
-				process.exit(1);
+				return process.exit(1);
 			};
 
 			// Remove the method from the raw arguments
@@ -104,7 +104,7 @@ class Command {
 				} else if (parameter.required) {
 					// If the parameter is required and not found, show an error
 					console.error(`Missing required parameter "--${parameter.name}" for the command "${this.name}".`);
-					process.exit(1);
+					return process.exit(1);
 				};
 			} else if (parameter.type === 'valuedParameter') {
 				// Find the parameter in the raw arguments
@@ -114,7 +114,7 @@ class Command {
 					const paramValue = rawArguments[paramIndex + 1];
 					if (!paramValue) {
 						console.error(`Missing value for parameter "--${parameter.name}" for the command "${this.name}".`);
-						process.exit(1);
+						return process.exit(1);
 					};
 					rawArguments.splice(paramIndex, 2);
 					// Add the parameter to the parameters array
@@ -125,12 +125,13 @@ class Command {
 				} else if (parameter.required) {
 					// If the parameter is required and not found, show an error
 					console.error(`Missing required parameter "--${parameter.name}" for the command "${this.name}".`);
-					process.exit(1);
+					return process.exit(1);
 				};
 			};
 			i++;
 		};
-		this.action(method, parameters, rawArguments);
+
+		return await this.action(method, parameters, rawArguments);
 	};
 };
 

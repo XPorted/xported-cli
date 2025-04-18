@@ -29,7 +29,7 @@ const Init = new Command({
 				fs.mkdirSync(directoryPath, { recursive: true });
 			} catch (error) {
 				console.error(`Error creating directory: ${error.message}`);
-				process.exit(1);
+				return process.exit(1);
 			};
 		};
 
@@ -41,7 +41,7 @@ const Init = new Command({
 			// If the directory already exists and force is not set, exit with an error
 			console.error(`XPorted configuration already exists at ${initPath}`);
 			console.error('Use --force to overwrite the existing configuration.');
-			process.exit(1);
+			return process.exit(1);
 		};
 
 		// Proceed with initialization logic here
@@ -64,15 +64,15 @@ email = "contributor@email.com"
 [access.http]
 enabled = true
 port = 8080`, {
-	encoding: 'utf8',
-	flag: force ? 'w' : 'wx' // Overwrite if force is set, fail if file exists otherwise
-});
+				encoding: 'utf8',
+				flag: force ? 'w' : 'wx' // Overwrite if force is set, fail if file exists otherwise
+			});
 			console.log(`XPorted directory initialized successfully at ${xportedPath}`);
 			console.log('You can now start using XPorted CLI commands.');
 			console.log('For more information, our github page is available at: https://github.com/XPorted/xported-cli/');
 		} catch (error) {
 			console.error(`Error creating .xported file: ${error.message}`);
-			process.exit(1);
+			return process.exit(1);
 		};
 	}
 });

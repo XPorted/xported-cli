@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "ES2016",
-		"module": "es2020",
+		"module": "es2022",
 		"moduleResolution": "Bundler",
 		"outDir": "dist",
 		"rootDir": "src",

@@ -46,7 +46,7 @@ const Help = new Command({
 
 			if (!commandInfo) {
 				console.error(`Command "${commandName}" not found.`);
-				process.exit(1);
+				return process.exit(1);
 			};
 
 			console.log(`${commandInfo.name} - ${commandInfo.description}.`);

@@ -4,7 +4,7 @@ import path from 'path';
 
 import { Command } from '../classes/Command.js';
 
-const packageJsonPath = path.resolve(import.meta.dirname, '../../package.json');
+const packageJsonPath = path.resolve('package.json'); // Relative to the root of the project
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 const version = packageJson.version;
 
