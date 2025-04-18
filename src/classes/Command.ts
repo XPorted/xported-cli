@@ -20,7 +20,7 @@ type CommandConfig = {
 	name: string;
 	category: 'general';
 	description: string;
-	methods: string[];
+	methods: string[] | '*';
 	parameters: Parameters;
 
 	action: (method: string, parameters: Parameters, rawArguments: string[]) => void | Promise<void>;
@@ -30,7 +30,7 @@ class Command {
 	name: string;
 	category: 'general';
 	description: string;
-	methods: string[];
+	methods: string[] | '*';
 	parameters: Parameters;
 	private action: (method: string, parameters: Parameters, rawArguments: string[]) => void | Promise<void>;
 
@@ -58,7 +58,7 @@ class Command {
 		// If the command has requires a method, get the first argument
 		// and check if it is in the methods array
 		let method = '';
-		if (this.methods.length > 0) {
+		if ((this.methods.length > 0) && this.methods !== '*') {
 			method = rawArguments[0];
 			// Check if the method exists in the methods array
 			if (!method) {
@@ -79,6 +79,11 @@ class Command {
 
 			// Remove the method from the raw arguments
 			rawArguments = rawArguments.slice(1);
+		};
+		// Check if the needed method is a wildcard
+		if (this.methods === '*') {
+			// If the method is a wildcard, accept any method
+			method = rawArguments[0];
 		};
 
 		// Parse the parameters

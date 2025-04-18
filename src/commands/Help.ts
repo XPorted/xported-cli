@@ -50,6 +50,8 @@ const Help = new Command({
 			};
 
 			console.log(`${commandInfo.name} - ${commandInfo.description}.`);
+			if (commandInfo.methods === '*')
+				commandInfo.methods = [];
 			if (commandInfo.methods.length > 0) {
 				console.log();
 				console.log('Methods:');
