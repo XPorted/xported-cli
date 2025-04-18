@@ -3,7 +3,7 @@
 import CommandRegistry from './utils/CommandRegistry.js';
 
 const args = process.argv.slice(2);
-const commandName = args[0];
+const commandName = args[0] || 'help';
 const commandArgs = args.slice(1);
 
 const command = CommandRegistry.get(commandName);

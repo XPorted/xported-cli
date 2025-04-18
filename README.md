@@ -2,11 +2,14 @@
 
 > A fast command-line tool for local and remote file management.
 
-## Build
+## Installation (Comming Soon)
+<strike>
+
 ```bash
-mkdir build && cd build
-cmake .. && make
+npm install -g xported-cli
 ```
+
+</strike>
 
 ## Documentation
  - [Installation](docs/installation.md)

@@ -11,8 +11,8 @@ xported-cli <command> [arguments]
 
 ## Available Commands
 XPorted CLI provides a variety of commands for different tasks. Here are some of the most commonly used commands:
-- [`init`](./commands/init.md): Initialize a new directory or configuration.
 - [`help`](./commands/help.md): Display help information for commands.
+- [`init`](./commands/init.md): Initialize a new directory or configuration.
 - [`version`](./commands/version.md): Show the current version of XPorted CLI.
 
 ## Next Steps
