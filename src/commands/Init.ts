@@ -1,9 +1,12 @@
 
 import fs from 'fs';
 import path from 'path';
+import term from 'terminal-kit';
 
 import { Command } from '../classes/Command.js';
 import { findInit } from '../utils/FindInit.js';
+
+const terminal = term.terminal;
 
 const Init = new Command({
 	name: 'init',
@@ -20,7 +23,7 @@ const Init = new Command({
 	],
 	action: (method, parameters) => {
 		const directoryPath = !method ? process.env['INIT_CWD'] : path.resolve(process.cwd(), method);
-		console.log(`Initializing XPorted directory at ${directoryPath}`);
+		terminal.cyan('Initializing XPorted directory at ').white.bold(`${directoryPath}\n`);
 
 		// Check if the directory exists
 		if (!fs.existsSync(directoryPath)) {
@@ -28,7 +31,7 @@ const Init = new Command({
 			try {
 				fs.mkdirSync(directoryPath, { recursive: true });
 			} catch (error) {
-				console.error(`Error creating directory: ${error.message}`);
+				terminal.red(`Error creating directory: ${error.message}\n`);
 				return process.exit(1);
 			};
 		};
@@ -39,8 +42,8 @@ const Init = new Command({
 		const initPath = findInit(directoryPath);
 		if (initPath !== '' && !force) {
 			// If the directory already exists and force is not set, exit with an error
-			console.error(`XPorted configuration already exists at ${initPath}`);
-			console.error('Use --force to overwrite the existing configuration.');
+			terminal.red(`XPorted configuration already exists at ${initPath}\n`);
+			terminal.red('Use --force to overwrite the existing configuration.\n');
 			return process.exit(1);
 		};
 
@@ -67,11 +70,12 @@ port = 8080`, {
 				encoding: 'utf8',
 				flag: force ? 'w' : 'wx' // Overwrite if force is set, fail if file exists otherwise
 			});
-			console.log(`XPorted directory initialized successfully at ${xportedPath}`);
-			console.log('You can now start using XPorted CLI commands.');
-			console.log('For more information, our github page is available at: https://github.com/XPorted/xported-cli/');
+			terminal.green('XPorted directory initialized successfully at ').white.bold(`${xportedPath}\n`);
+			terminal.green('You can now start using XPorted CLI commands.\n');
+			terminal.green('For more information, our github page is available at: ');
+			terminal.blue.underline('https://github.com/XPorted/xported-cli/\n');
 		} catch (error) {
-			console.error(`Error creating .xported file: ${error.message}`);
+			terminal.red(`Error creating .xported file: ${error.message}\n`);
 			return process.exit(1);
 		};
 	}

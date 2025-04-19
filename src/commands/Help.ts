@@ -1,5 +1,9 @@
 
+import term from 'terminal-kit';
+
 import { Command, ValuedParameter } from '../classes/Command.js';
+
+const terminal = term.terminal;
 
 const Help = new Command({
 	name: 'help',
@@ -20,9 +24,8 @@ const Help = new Command({
 		const commandParameter = parameters.find(param => param.name === 'command') as ValuedParameter | undefined;
 
 		if (!commandParameter) {
-			console.log('Usage: xported-cli <command> [options]');
-			console.log();
-			console.log('Commands:');
+			terminal.bold('Usage: ').cyan('xported-cli ').cyan('<command> ').cyan('[options]\n\n');
+			terminal.bold('Commands:\n');
 
 			const categorizedCommands = new Map<string, Command[]>();
 			for (const [name, command] of CommandRegistry) {
@@ -32,50 +35,50 @@ const Help = new Command({
 			};
 
 			for (const [category, commands] of categorizedCommands) {
-				console.log(`\t${category}:`);
+				terminal.yellow(`\t${category}:\n`);
 				for (const command of commands) {
-					console.log(`\t\t${command.name} - ${command.description}.`);
+					terminal.cyan(`\t\t${command.name}`).gray(` - ${command.description}.\n`);
 				};
-				console.log();
+				terminal('\n');
 			};
 
-			console.log('Use "xported-cli help --command <command>" for more information on a specific command.');
+			terminal.bold('Use "').cyan('xported-cli help --command <command>').bold('" for more information on a specific command.\n');
 		} else {
 			const commandName = commandParameter.value;
 			const commandInfo = CommandRegistry.get(commandName);
 
 			if (!commandInfo) {
-				console.error(`Command "${commandName}" not found.`);
+				terminal.red(`Command "${commandName}" not found.\n`);
 				return process.exit(1);
 			};
 
-			console.log(`${commandInfo.name} - ${commandInfo.description}.`);
+			terminal.bold.cyan(`${commandInfo.name}`).gray(` - ${commandInfo.description}.\n`);
 			if (commandInfo.methods === '*')
 				commandInfo.methods = [];
 			if (commandInfo.methods.length > 0) {
-				console.log();
-				console.log('Methods:');
+				terminal('\n');
+				terminal.bold('Methods:\n');
 				for (const method of commandInfo.methods)
-					console.log(`\t${method}`);
+					terminal.yellow(`\t${method}\n`);
 			};
 			if (commandInfo.parameters.length > 0) {
-				console.log();
-				console.log('Parameters:');
+				terminal('\n');
+				terminal.bold('Parameters:\n');
 				for (const parameter of commandInfo.parameters) {
 					if (parameter.type === 'valuedParameter') {
-						console.log(`\t--${parameter.name} <${parameter.name}> - ${parameter.description}.`);
+						terminal.cyan(`\t--${parameter.name} <${parameter.name}>`).gray(` - ${parameter.description}.\n`);
 					} else {
-						console.log(`\t--${parameter.name} - ${parameter.description}.`);
+						terminal.cyan(`\t--${parameter.name}`).gray(` - ${parameter.description}.\n`);
 					};
 				};
 			};
 
-			console.log();
-			console.log('Usage:');
-			console.log(`\txported-cli ${commandInfo.name}${commandInfo.methods.length > 0 ? ' <method>' : ''}${commandInfo.parameters.length > 0 ? ' [parameters]' : ''}`);
+			terminal('\n');
+			terminal.bold('Usage:\n');
+			terminal.cyan(`\txported-cli ${commandInfo.name}${commandInfo.methods.length > 0 ? ' <method>' : ''}${commandInfo.parameters.length > 0 ? ' [parameters]' : ''}\n`);
 
-			console.log();
-			console.log('Use "xported-cli help" to see all commands.');
+			terminal('\n');
+			terminal.bold('Use "').cyan('xported-cli help').bold('" to see all commands.\n');
 		};
 	}
 });

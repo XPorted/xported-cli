@@ -1,6 +1,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import term from 'terminal-kit';
 
 import express from 'express';
 import mimeTypes from 'mime-types';
@@ -10,6 +11,8 @@ import { Command } from '../../classes/Command.js';
 import findInit from '../../utils/FindInit.js';
 import parseInit from '../../utils/ParseInit.js';
 import { File, Directory } from '../../utils/MapDirectory.js';
+
+const terminal = term.terminal;
 
 const app = express();
 app.use(express.json());
@@ -49,8 +52,8 @@ const Http = new Command({
 			console.error('Please run "xported-cli init" to initialize a new xported directory.');
 			return process.exit(1);
 		};
-		const rootDirectory = path.dirname(initPath);
-		console.log(`XPorted starting in ${rootDirectory}`);
+		const rootDirectory = path.dirname(initPath);;
+		terminal(`XPorted starting in ${rootDirectory}\n`);
 
 		// Load the xported configuration
 		const config = parseInit(rootDirectory);
@@ -88,15 +91,76 @@ const Http = new Command({
 			return process.exit(1);
 		};
 
+		type HttpLog = {
+			timestamp: string;
+			duration: number;
+			method: string;
+			path: string;
+			status: number;
+		};
+		const logs: HttpLog[] = [];
+
+		const updateLogTable = () => {
+			terminal.clear();
+			terminal.cyan('XPorted is running on ').white.bold(`http://localhost:${config.access.http.port}\n`);
+
+			// Limit the number of logs to the height of the terminal
+			if (logs.length > terminal.height - 4) 
+				logs.splice(0, logs.length - (terminal.height - 4));
+
+			terminal.moveTo(1, 3);
+			terminal.table([
+				['Method', 'Timestamp', 'Duration', 'Path', 'Status'],
+				...logs.map(log => [
+					log.method,
+					log.timestamp,
+					log.duration ? `${log.duration} ms` : 'N/A',
+					log.path,
+					log.status
+				]) as readonly string[][]
+			], {
+				hasBorder: false,
+				firstRowTextAttr: {
+					bold: true,
+					underline: true,
+				},
+				firstColumnTextAttr: {
+					bold: true
+				},
+				wordWrap: true
+			});
+
+			terminal.moveTo(1, terminal.height - 1);
+			terminal.cyan('Press ').white.bold('Ctrl+C').cyan(' to stop the server.\n');
+		};
+		terminal.on('resize', updateLogTable);
+
 		// Serve the directory
 		// Get the path from <url>/<path>
 		app.get(['/', '/*'], async (request, response) => {
 			const urlPath = decodeURIComponent(request.path);
 			const filePath = path.join(rootDirectory, urlPath);
 
+			// Create log
+			const log: HttpLog = {
+				timestamp: new Date().toISOString(),
+				duration: undefined,
+				method: request.method,
+				path: filePath,
+				status: undefined
+			};
+			logs.push(log);
+			updateLogTable();
+
+			// Start the timer
+			const start = Date.now();
+
 			// Check if the file or directory exists
 			if (!fs.existsSync(filePath)) {
 				response.status(404).send('File or directory not found');
+				log.status = 404;
+				log.duration = Date.now() - start;
+				updateLogTable();
 				return;
 			};
 
@@ -116,6 +180,10 @@ const Http = new Command({
 					'Content-Type': 'application/json',
 					'Content-Disposition': 'inline'
 				}).json(contents);
+
+				log.status = 200;
+				log.duration = Date.now() - start;
+				updateLogTable();
 			} else {
 				const fileName = path.basename(filePath);
 				const mimeType = mimeTypes.lookup(fileName) || 'application/octet-stream';
@@ -130,12 +198,16 @@ const Http = new Command({
 					dotfiles: 'allow',
 					etag: true
 				});
+
+				log.status = 200;
+				log.duration = Date.now() - start;
+				updateLogTable();
 			};
 		});
 
 		// Start the server
 		app.listen(config.access.http.port, () => {
-			console.log(`XPorted is running on http://localhost:${config.access.http.port}`);
+			updateLogTable();
 		});
 	}
 });
