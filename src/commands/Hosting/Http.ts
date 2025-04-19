@@ -92,32 +92,34 @@ const Http = new Command({
 		// Get the path from <url>/<path>
 		app.get(['/', '/*'], async (request, response) => {
 			const urlPath = decodeURIComponent(request.path);
-			console.log(urlPath);
-
-
 			const filePath = path.join(rootDirectory, urlPath);
 
+			// Check if the file or directory exists
 			if (!fs.existsSync(filePath)) {
 				response.status(404).send('File or directory not found');
 				return;
 			};
 
+			// Check if the path is a directory or a file
 			const stats = fs.statSync(filePath);
 			if (stats.isDirectory()) {
 				const contents: Array<Directory | File> = [];
+				// Read the directory contents
 				for (const content of fs.readdirSync(filePath))
 					contents.push({
 						name: content,
 						type: fs.statSync(path.join(filePath, content)).isDirectory() ? 'directory' : 'file',
 						children: undefined
 					});
+				// Send the directory contents as JSON
 				response.header({
 					'Content-Type': 'application/json',
 					'Content-Disposition': 'inline'
-				}).send(JSON.stringify(contents));
+				}).json(contents);
 			} else {
 				const fileName = path.basename(filePath);
 				const mimeType = mimeTypes.lookup(fileName) || 'application/octet-stream';
+				// Send the file
 				response.sendFile(filePath, {
 					headers: {
 						'Content-Type': mimeType,
