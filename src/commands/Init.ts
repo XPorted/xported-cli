@@ -19,7 +19,7 @@ const Init = new Command({
 		}
 	],
 	action: (method, parameters) => {
-		const directoryPath = !method ? process.cwd() : path.resolve(process.cwd(), method);
+		const directoryPath = !method ? process.env['INIT_CWD'] : path.resolve(process.cwd(), method);
 		console.log(`Initializing XPorted directory at ${directoryPath}`);
 
 		// Check if the directory exists

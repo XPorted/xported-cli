@@ -19,24 +19,15 @@ npm install -g xported-cli
  - [Development](docs/development.md)
 
 ## Features
-- [ ] File Management
-	- [ ] Create
-	- [ ] Delete
-	- [ ] Move
-	- [ ] Copy
-	- [ ] Rename
-	- [ ] List
-	- [ ] Search
-- [ ] File Transfer
-	- [ ] Upload
-	- [ ] Download
-	- [ ] Sync
-	- [ ] Resume
-	- [ ] Pause
-	- [ ] Cancel
-	- [ ] Progress
 - [ ] Remote File Management
 	- [ ] SSH
 	- [ ] FTP
 	- [ ] NFS
 	- [ ] HTTP/HTTPS
+		- [/] Read
+		- [ ] Write
+		- [ ] Delete
+		- [ ] Move
+		- [ ] Copy
+		- [ ] Update
+		- [ ] Query

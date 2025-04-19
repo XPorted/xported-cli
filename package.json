@@ -33,7 +33,10 @@
 	},
 	"homepage": "https://github.com/XPorted/xported-cli#readme",
 	"devDependencies": {
+		"@types/content-disposition": "^0.5.8",
+		"@types/express": "^5.0.1",
 		"@types/jest": "^29.5.14",
+		"@types/mime-types": "^2.1.4",
 		"@types/node": "^22.14.1",
 		"@typescript-eslint/eslint-plugin": "^8.30.1",
 		"@typescript-eslint/parser": "^8.30.1",
@@ -44,5 +47,11 @@
 		"ts-jest": "^29.3.2",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.8.3"
+	},
+	"dependencies": {
+		"content-disposition": "^0.5.4",
+		"express": "^4.21.2",
+		"mime-types": "^3.0.1",
+		"toml": "^3.0.0"
 	}
 }

@@ -14,7 +14,7 @@ const checkFileExistance = (file: string): boolean => {
  * Finds the .xported init file in the given path or its parent directories.
  * 
  * @param {string} directoryPath - The path to search for the .xported init file.
- * @returns {string} - The path to the .xported init file or an empty string if not found.
+ * @returns {string} The path to the .xported init file or an empty string if not found.
  */
 const findInit = (directoryPath: string): string => {
 	// Loop through the directory and its parents to find the .xported init file
