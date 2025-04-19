@@ -24,7 +24,7 @@ const mapDirectory = async (dir: string): Promise<Directory> => {
 	const childrenPromises = childNames.map(async (child): Promise<File | Directory> => {
 		const childPath = path.join(dir, child);
 		const stats = await fs.promises.stat(childPath);
-		
+
 		if (stats.isDirectory())
 			return await mapDirectory(childPath);
 		else

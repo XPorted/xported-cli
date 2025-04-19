@@ -91,6 +91,8 @@ const Http = new Command({
 			return process.exit(1);
 		};
 
+
+
 		type HttpLog = {
 			timestamp: string;
 			duration: number;
@@ -134,6 +136,8 @@ const Http = new Command({
 			terminal.cyan('Press ').white.bold('Ctrl+C').cyan(' to stop the server.\n');
 		};
 		terminal.on('resize', updateLogTable);
+
+
 
 		// Serve the directory
 		// Get the path from <url>/<path>
@@ -204,6 +208,8 @@ const Http = new Command({
 				updateLogTable();
 			};
 		});
+
+
 
 		// Start the server
 		app.listen(config.access.http.port, () => {

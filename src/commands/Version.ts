@@ -19,7 +19,7 @@ const Version = new Command({
 	parameters: [],
 	action: () => {
 		terminal('XPorted CLI version: ');
-		terminal.bold(version);	
+		terminal.bold(version);
 		terminal('\n');
 	}
 });

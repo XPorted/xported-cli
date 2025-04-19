@@ -30,12 +30,12 @@ describe('FindInit', () => {
 
 		// Clean up before test
 		if (fs.existsSync(directoryPath))
-			fs.rmdirSync(directoryPath, { recursive: true });		
+			fs.rmdirSync(directoryPath, { recursive: true });
 		fs.mkdirSync(directoryPath, { recursive: true });
 
 		const foundFile = findInit(directoryPath);
 		expect(foundFile).toBe('');
-		
+
 
 		fs.rmdirSync(directoryPath, { recursive: true });
 	});

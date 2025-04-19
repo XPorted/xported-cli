@@ -30,11 +30,11 @@ const schema = {
  * @returns {object} The parsed configuration object.
  */
 const parseInit = (directoryPath: string): typeof schema => {
-    const filePath = path.join(directoryPath, '.xported');
-    const fileContent = fs.readFileSync(filePath, 'utf-8');
-	
+	const filePath = path.join(directoryPath, '.xported');
+	const fileContent = fs.readFileSync(filePath, 'utf-8');
+
 	const parsedContent = toml.parse(fileContent);
-	
+
 	// Validate the parsed content against the schema
 	const isValid = Object.keys(schema).every(key => {
 		if (typeof parsedContent[key] !== typeof schema[key])
@@ -44,7 +44,7 @@ const parseInit = (directoryPath: string): typeof schema => {
 			return Object.keys(schema[key]).every(subKey => {
 				return typeof parsedContent[key][subKey] === typeof schema[key][subKey];
 			});
-		
+
 		return true;
 	});
 

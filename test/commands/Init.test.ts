@@ -13,7 +13,7 @@ describe('Init Command', () => {
 
 	test('should create a .xported file', () => {
 		const directoryPath = '/tmp/xported-cli-test';
-		
+
 		// Clean up before test
 		if (fs.existsSync(directoryPath))
 			fs.rmdirSync(directoryPath, { recursive: true });
@@ -43,7 +43,7 @@ describe('Init Command', () => {
 		expect(fs.readFileSync(filePath, 'utf8')).toBe('test content'); // To ensure the file was created correctly
 
 		Init.execute([directoryPath, '--force']);
-		
+
 		expect(fs.readFileSync(filePath, 'utf8')).toContain('xported');
 		expect(fs.readFileSync(filePath, 'utf8')).not.toBe('test content'); // To ensure the file was overridden
 
