@@ -18,7 +18,7 @@ type Parameters = Array<Parameter | ValuedParameter>;
 
 type CommandConfig = {
 	name: string;
-	category: 'general' | 'test';
+	category: 'general' | 'hosting' | 'test';
 	description: string;
 	methods: string[] | '*';
 	parameters: Parameters;
@@ -27,12 +27,12 @@ type CommandConfig = {
 };
 
 class Command {
-	name: string;
-	category: 'general' | 'test';
-	description: string;
-	methods: string[] | '*';
-	parameters: Parameters;
-	private action: (method: string, parameters: Parameters, rawArguments: string[]) => void | Promise<void | any>;
+	name: CommandConfig['name'];
+	category: CommandConfig['category'];
+	description: CommandConfig['description'];
+	methods: CommandConfig['methods'];
+	parameters: CommandConfig['parameters'];
+	private action: CommandConfig['action'];
 
 	constructor(
 		public command: CommandConfig = {

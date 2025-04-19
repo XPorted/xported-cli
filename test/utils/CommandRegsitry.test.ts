@@ -11,10 +11,22 @@ describe('CommandRegistry', () => {
 
 	test('should contain all commands', () => {
 		const commandsPath = path.resolve('src/commands'); // Relative to the root of the project
-		const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.ts') || file.endsWith('.js'));
-		
+		const commandFiles: string[] = [];
+
+		// Read all files in the commands directory, including subdirectories
+		const readFilesRecursively = (dir) => {
+			const files = fs.readdirSync(dir);
+			for (const file of files) {
+				if (fs.statSync(path.join(dir, file)).isDirectory()) // If the file is a directory, read it recursively
+					readFilesRecursively(path.join(dir, file));
+				else if (file.endsWith('.ts')) // If the file is a TypeScript file and not a test file
+					commandFiles.push(path.join(dir, file));
+			};
+		};
+		readFilesRecursively(commandsPath);
+
 		for (const file of commandFiles) {
-			const command = require(path.join(commandsPath, file));
+			const command = require(file);
 			expect(CommandRegistry.has(command.default.name)).toBe(true);
 		};
 		expect(CommandRegistry.size).toBe(commandFiles.length);
