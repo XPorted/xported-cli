@@ -25,7 +25,7 @@ npm install -g xported-cli
 	- [ ] NFS
 	- [ ] HTTP/HTTPS
 		- [/] Read
-		- [ ] Write
+		- [/] Write
 		- [ ] Delete
 		- [ ] Move
 		- [ ] Copy
