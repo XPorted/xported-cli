@@ -6,11 +6,17 @@ import path from 'path';
 type File = {
 	type: 'file';
 	name: string;
+	stat?: {
+		[key: string]: any;
+	};
 };
 type Directory = {
 	type: 'directory';
 	name: string;
 	children: (File | Directory)[];
+	stat?: {
+		[key: string]: any;
+	};
 };
 
 /**

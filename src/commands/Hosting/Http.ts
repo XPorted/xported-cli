@@ -6,6 +6,7 @@ import term from 'terminal-kit';
 import express from 'express';
 import mimeTypes from 'mime-types';
 import contentDisposition from 'content-disposition';
+import expressFileUpload from 'express-fileupload';
 
 import { Command } from '../../classes/Command.js';
 import findInit from '../../utils/FindInit.js';
@@ -16,7 +17,7 @@ const terminal = term.terminal;
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50gb' }));
 app.use((req, res, next) => {
 	// Set the headers to allow CORS
 	res.header('Access-Control-Allow-Origin', '*');
@@ -32,6 +33,12 @@ app.use((req, res, next) => {
 	res.header('X-Content-Type-Options', 'nosniff');
 	next();
 });
+app.use(expressFileUpload({
+	limits: { fileSize: 50 * 1024 * 1024 * 1024 }, // 50 GB
+	abortOnLimit: true,
+	createParentPath: true,
+	debug: false
+}));
 
 const Http = new Command({
 	name: 'http',
@@ -107,7 +114,7 @@ const Http = new Command({
 			terminal.cyan('XPorted is running on ').white.bold(`http://localhost:${config.access.http.port}\n`);
 
 			// Limit the number of logs to the height of the terminal
-			if (logs.length > terminal.height - 4) 
+			if (logs.length > terminal.height - 4)
 				logs.splice(0, logs.length - (terminal.height - 4));
 
 			terminal.moveTo(1, 3);
@@ -140,7 +147,7 @@ const Http = new Command({
 
 
 		// Serve the directory
-		// Get the path from <url>/<path>
+		// Handle GET requests for retrieving files and directories
 		app.get(['/', '/*'], async (request, response) => {
 			const urlPath = decodeURIComponent(request.path);
 			const filePath = path.join(rootDirectory, urlPath);
@@ -173,12 +180,22 @@ const Http = new Command({
 			if (stats.isDirectory()) {
 				const contents: Array<Directory | File> = [];
 				// Read the directory contents
-				for (const content of fs.readdirSync(filePath))
+				for (const content of fs.readdirSync(filePath)) {
+					const isFile = fs.statSync(path.join(filePath, content)).isFile();
 					contents.push({
 						name: content,
-						type: fs.statSync(path.join(filePath, content)).isDirectory() ? 'directory' : 'file',
-						children: undefined
+						type: isFile ? 'file' : 'directory',
+						children: undefined,
+						stat: (() => {
+							const stat = fs.statSync(path.join(filePath, content));
+							const metadata = {};
+							for (const key in stat) {
+								metadata[key] = stat[key];
+							};
+							return metadata;
+						})()
 					});
+				};
 				// Send the directory contents as JSON
 				response.header({
 					'Content-Type': 'application/json',
@@ -209,6 +226,111 @@ const Http = new Command({
 			};
 		});
 
+
+
+		// Handle POST requests for uploading files
+		app.post(['/', '/*'], async (request, response) => {
+			const urlPath = decodeURIComponent(request.path);
+			const directoryPath = path.join(rootDirectory, urlPath);
+
+			// Create log
+			const log: HttpLog = {
+				timestamp: new Date().toISOString(),
+				duration: undefined,
+				method: request.method,
+				path: directoryPath,
+				status: undefined
+			};
+			logs.push(log);
+			updateLogTable();
+
+
+			const start = Date.now();
+
+
+			// Check if the directory exists
+			if (!fs.existsSync(directoryPath)) {
+				response.status(404).send('Directory not found');
+				log.status = 404;
+				log.duration = Date.now() - start;
+				updateLogTable();
+				return;
+			};
+
+			// Check if the path is a directory
+			const stats = fs.statSync(directoryPath);
+			if (!stats.isDirectory()) {
+				response.status(400).send('Path is not a directory');
+				log.status = 400;
+				log.duration = Date.now() - start;
+				updateLogTable();
+				return;
+			};
+
+			if (!request.files) {
+				response.status(400).send('No files were uploaded');
+				log.status = 400;
+				log.duration = Date.now() - start;
+				updateLogTable();
+				return;
+			};
+			
+			const fileKeys = Object.keys(request.files);
+			if (fileKeys.length === 0) {
+				response.status(400).send('No files were uploaded');
+				log.status = 400;
+				log.duration = Date.now() - start;
+				updateLogTable();
+				return;
+			};
+
+			const files = [];
+
+			// Check if the files are valid
+			for (const fileKey of fileKeys) {
+				const file = request.files[fileKey];
+				if (!file) {
+					response.status(400).send(`File ${fileKey} is invalid`);
+					log.status = 400;
+					log.duration = Date.now() - start;
+					updateLogTable();
+					return;
+				};
+
+				const filesArray = Array.isArray(file) ? file : [file];
+				for (const file of filesArray)
+					files.push(file);
+			};
+
+			for (const file of files) {
+				const filePath = path.join(directoryPath, file.name);
+				// Check if the file already exists
+				if (fs.existsSync(filePath)) {
+					response.status(400).send(`File ${file.name} already exists`);
+					log.status = 400;
+					log.duration = Date.now() - start;
+					updateLogTable();
+					return;
+				};
+
+				// Create the file
+				await fs.promises.writeFile(filePath, file.data);
+				// Check if the file was created successfully
+				if (!fs.existsSync(filePath)) {
+					response.status(500).send(`Error creating file ${file.name}`);
+					log.status = 500;
+					log.duration = Date.now() - start;
+					updateLogTable();
+					return;
+				};
+			};
+
+			// Send the response
+			response.status(200).send(`File${files.length > 1 ? 's' : ''} uploaded successfully`);
+			log.status = 200;
+			log.duration = Date.now() - start;
+			updateLogTable();
+		});
 
 
 		// Start the server
