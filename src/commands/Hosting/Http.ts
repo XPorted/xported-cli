@@ -114,8 +114,8 @@ const Http = new Command({
 			terminal.cyan('XPorted is running on ').white.bold(`http://localhost:${config.access.http.port}\n`);
 
 			// Limit the number of logs to the height of the terminal
-			if (logs.length > terminal.height - 4)
-				logs.splice(0, logs.length - (terminal.height - 4));
+			if (logs.length > terminal.height - 5)
+				logs.splice(0, logs.length - (terminal.height - 5));
 
 			terminal.moveTo(1, 3);
 			terminal.table([
@@ -274,7 +274,7 @@ const Http = new Command({
 				updateLogTable();
 				return;
 			};
-			
+
 			const fileKeys = Object.keys(request.files);
 			if (fileKeys.length === 0) {
 				response.status(400).send('No files were uploaded');
