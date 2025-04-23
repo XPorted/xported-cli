@@ -4,7 +4,7 @@
 	"description": "> A fast command-line tool for local and remote file management.",
 	"main": "dist/index.js",
 	"bin": {
-		"xported": "dist/index.js"
+		"xported-cli": "dist/index.js"
 	},
 	"directories": {
 		"doc": "docs"

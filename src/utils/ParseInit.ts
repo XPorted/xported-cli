@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import path from 'path';
 import toml from 'toml';
@@ -37,12 +36,14 @@ const parseInit = (directoryPath: string): typeof schema => {
 
 	// Validate the parsed content against the schema
 	const isValid = Object.keys(schema).every(key => {
-		if (typeof parsedContent[key] !== typeof schema[key])
-			return false;
+		if (typeof parsedContent[key] !== typeof schema[key]) return false;
 
 		if (typeof parsedContent[key] === 'object')
 			return Object.keys(schema[key]).every(subKey => {
-				return typeof parsedContent[key][subKey] === typeof schema[key][subKey];
+				return (
+					typeof parsedContent[key][subKey] ===
+					typeof schema[key][subKey]
+				);
 			});
 
 		return true;
@@ -51,10 +52,10 @@ const parseInit = (directoryPath: string): typeof schema => {
 	if (!isValid) {
 		console.error('Invalid configuration format');
 		return null;
-	};
+	}
 
 	return parsedContent;
 };
 
 export default parseInit;
-export { parseInit };
+export {parseInit};
